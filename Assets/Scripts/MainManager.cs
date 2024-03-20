@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+using UnityEditor;
 
 public class MainManager : MonoBehaviour
 {
@@ -12,11 +14,20 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+    public Text NameText;
+    public Text highScoreText;
+    private string highScoreUser;
+    
     
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
+
+    
+    private string userName;
+    private int highScore;
+    private int newScore;
 
     
     // Start is called before the first frame update
@@ -36,6 +47,19 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+       
+
+        
+
+        
+           userName = PlayerPrefs.GetString("userName");
+        NameText.text = userName;
+
+        highScore = PlayerPrefs.GetInt("HighScore");
+        highScoreUser = PlayerPrefs.GetString("HighScoreUser");
+        highScoreText.text = highScoreUser +" : " + highScore; 
+
+
     }
 
     private void Update()
@@ -67,10 +91,29 @@ public class MainManager : MonoBehaviour
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
     }
+   
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        newScore = m_Points;
+        SetHighScore();
     }
+    public void SetHighScore()
+    {
+        
+        if (newScore > highScore)
+        {
+            PlayerPrefs.SetInt("HighScore", newScore);
+
+            //highScoreUser = userName;
+            PlayerPrefs.SetString("HighScoreUser", userName);
+            Debug.Log(highScore);
+        }
+        
+
+       
+    }
+    
 }
